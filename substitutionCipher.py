@@ -2,32 +2,64 @@ alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
             'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
             'u', 'v', 'w', 'x', 'y', 'z']
 
-plaintext_Dict = {}
-for num in range(1, 27):
-    plaintext_Dict[num] = ""
+plaintext_Dict = {}                       # create global alphabet dict
 counter = 0
-for letter in alphabet:
+for let in alphabet:
     counter += 1
-    plaintext_Dict[counter] = letter
+    plaintext_Dict[let] = counter
 
 
-def key_error(key):
+def key_error(key):                       # checks key for duplicate letters
     letterList = []
-    for let in key:
-        if let in letterList:
+    for letter in key:
+        if letter in letterList:
             return False
-        letterList.append(let)
+        letterList.append(letter)
         return True
 
 
-def substitution_encrypt(plaintext_file, ciphertext_file, key):
-    alphabetList = alphabet.copy()
-    ciphertext_Dict = {}
-    for numb in range(1, 27):
-        ciphertext_Dict[numb] = ""
-    if key_error(key) == False:
-        print("Key not valid")
+def encrypt(line, cipherList):
+    cipherDict = {}
+    let_counter = 0
+    for char in cipherList:               # create cipher dict
+        let_counter += 1
+        cipherDict[char] = let_counter
+    encryptedLine = ""
+    for char in line:
+        print(char)
+        if char not in alphabet:          # if special char, just write, don't encrypt
+            encryptedLine += char
+        else:
+            loc = plaintext_Dict[char]        # determines location of current char in alphabet
+        # encryptedLine += cipherDict[loc]   loc would be an int, which is not a key and can't be used
+            for key in cipherDict.keys():     # loops through keys in cipher dict until the letter
+                if cipherDict[key] == loc:    # corresponding to correct location is found
+                    encryptedLine += key
+    return encryptedLine
 
+# def decrypt():
+
+
+def substitution_encrypt(textFile, cipherFile, cipherList):
+    if key_error(cipherList) == False:
+        print("Key not valid")
+    try:
+        read_file = open(textFile)
+    except:
+        print("Cannot open input file")
+    try:
+        write_file = open(cipherFile, "w")
+    except:
+        print("Cannot open output file")
+    for line in read_file:
+        write_file.write(encrypt(line, cipherList))
+    read_file.close()
+    write_file.close()
+
+
+def keyword_encrypt(plaintext_file, ciphertext_file, keyword):
+    if key_error(keyword) == False:
+        print("Key not valid")
     try:
         read_file = open(plaintext_file)
     except:
@@ -36,35 +68,25 @@ def substitution_encrypt(plaintext_file, ciphertext_file, key):
         write_file = open(ciphertext_file, "w")
     except:
         print("Cannot open output file")
-
-    for let in key:
-        alphabetList.remove(let)
-
+    alphabetList = alphabet.copy()         # creating cipher list from keyword
     cipherList = []
-    for let in key:
-        cipherList.append(let)
-    for let in alphabetList:
-        cipherList.append(let)
-
-    loc_counter = 0
-    for let in cipherList:
-        loc_counter += 1
-        ciphertext_Dict[loc_counter] = let
-
-    for let in read_file:
-        if let not in alphabet:
-            # every single char is coming into this if-block for some reason
-            write_file.write(let)
-        for key in plaintext_Dict.keys():
-            # not writing anything into output file for some reason
-            if plaintext_Dict[key] == let:  # finds the key corresponding to current letter
-                write_file.write(ciphertext_Dict[key])  # writes the letter at that key in the encrypted dict
-            else:
-                continue
+    for letter in keyword:
+        alphabetList.remove(letter)
+        cipherList.append(letter)
+    for letter in alphabetList:
+        cipherList.append(letter)
+    for line in read_file:                  # encrypt
+        write_file.write(encrypt(line, cipherList))
     read_file.close()
     write_file.close()
 
 
+cipherList1 = ['e', 'b', 'c', 'd', 'a', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+               'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+
+
 substitution_encrypt("/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/plainText.txt",
                      "/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/cipherText.txt",
-                     "zebras")
+                     cipherList1)
+
+keyword_encrypt()
