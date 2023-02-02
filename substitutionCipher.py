@@ -26,12 +26,10 @@ def encrypt(line, cipherList):
         cipherDict[char] = let_counter
     encryptedLine = ""
     for char in line:
-        print(char)
         if char not in alphabet:          # if special char, just write, don't encrypt
             encryptedLine += char
         else:
             loc = plaintext_Dict[char]        # determines location of current char in alphabet
-        # encryptedLine += cipherDict[loc]   loc would be an int, which is not a key and can't be used
             for key in cipherDict.keys():     # loops through keys in cipher dict until the letter
                 if cipherDict[key] == loc:    # corresponding to correct location is found
                     encryptedLine += key
@@ -57,15 +55,15 @@ def substitution_encrypt(textFile, cipherFile, cipherList):
     write_file.close()
 
 
-def keyword_encrypt(plaintext_file, ciphertext_file, keyword):
+def keyword_encrypt(textFile, cipherFile, keyword):
     if key_error(keyword) == False:
         print("Key not valid")
     try:
-        read_file = open(plaintext_file)
+        read_file = open(textFile)
     except:
         print("Cannot open input file")
     try:
-        write_file = open(ciphertext_file, "w")
+        write_file = open(cipherFile, "w")
     except:
         print("Cannot open output file")
     alphabetList = alphabet.copy()         # creating cipher list from keyword
@@ -81,12 +79,34 @@ def keyword_encrypt(plaintext_file, ciphertext_file, keyword):
     write_file.close()
 
 
-cipherList1 = ['e', 'b', 'c', 'd', 'a', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-               'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+def caesar_encrypt(textFile, cipherFile, shift):
+    try:
+        read_file = open(textFile)
+    except:
+        print("Cannot open input file")
+    try:
+        write_file = open(cipherFile, "w")
+    except:
+        print("Cannot open output file")
+    alphabetList = alphabet.copy()
+    cipherList = []
+    for i in range(len(alphabetList)):
+        num = (i+shift) % len(alphabetList)
+        cipherList.append(alphabetList[num])
+    for line in read_file:
+        write_file.write(encrypt(line, cipherList))
 
 
-substitution_encrypt("/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/plainText.txt",
-                     "/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/cipherText.txt",
-                     cipherList1)
+general_cipherList1 = ['e', 'b', 'c', 'd', 'a', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+                       'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 
-keyword_encrypt()
+
+# substitution_encrypt("/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/plainText.txt",
+                    # "/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/cipherText.txt",
+                    # general_cipherList1)
+
+# keyword_encrypt("/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/plainText.txt",
+                # "/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/cipherText.txt", "zebras")
+
+caesar_encrypt("/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/plainText.txt",
+                "/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/cipherText.txt", 23)
