@@ -2,11 +2,11 @@ alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
             'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
             'u', 'v', 'w', 'x', 'y', 'z']
 
-plaintext_Dict = {}                       # create global alphabet dict
+textDict = {}                       # create global alphabet dict
 counter = 0
 for let in alphabet:
     counter += 1
-    plaintext_Dict[let] = counter
+    textDict[let] = counter
 
 
 def key_error(key):                       # checks key for duplicate letters
@@ -29,13 +29,29 @@ def encrypt(line, cipherList):
         if char not in alphabet:          # if special char, just write, don't encrypt
             encryptedLine += char
         else:
-            loc = plaintext_Dict[char]        # determines location of current char in alphabet
+            loc = textDict[char]            # determines location of current char in alphabet
             for key in cipherDict.keys():     # loops through keys in cipher dict until the letter
                 if cipherDict[key] == loc:    # corresponding to correct location is found
                     encryptedLine += key
     return encryptedLine
 
-# def decrypt():
+
+def decrypt(line, cipherList):
+    cipherDict = {}
+    let_counter = 0
+    for char in cipherList:  # create cipher dict
+        let_counter += 1
+        cipherDict[char] = let_counter
+    decryptedLine = ""
+    for char in line:
+        if char not in alphabet:  # if special char, just write, don't encrypt
+            decryptedLine += char
+        else:
+            loc = cipherDict[char]      # determines location of current char in cipher dict
+            for key in textDict.keys():  # loops through letters in alphabet until the letter
+                if textDict[key] == loc:  # corresponding to correct location is found
+                    decryptedLine += key
+    return decryptedLine
 
 
 def substitution_encrypt(textFile, cipherFile, cipherList):
@@ -51,8 +67,33 @@ def substitution_encrypt(textFile, cipherFile, cipherList):
         print("Cannot open output file")
     for line in read_file:
         write_file.write(encrypt(line, cipherList))
-    read_file.close()
-    write_file.close()
+
+
+def substitution_decrypt(textFile, cipherFile, cipherList):
+    if key_error(cipherList) == False:
+        print("Key not valid")
+    try:
+        read_file = open(cipherFile)
+    except:
+        print("Cannot open input file")
+    try:
+        write_file = open(textFile, "w")
+    except:
+        print("Cannot open output file")
+    for line in read_file:
+        write_file.write(decrypt(line, cipherList))
+
+
+def keywordListCreator(keyword):
+    alphabetList = alphabet.copy()  # creating cipher list from keyword
+    cipherList = []
+    for letter in keyword:
+        alphabetList.remove(letter)
+        cipherList.append(letter)
+    for letter in alphabetList:
+        cipherList.append(letter)
+    print(cipherList)
+    return cipherList
 
 
 def keyword_encrypt(textFile, cipherFile, keyword):
@@ -66,17 +107,25 @@ def keyword_encrypt(textFile, cipherFile, keyword):
         write_file = open(cipherFile, "w")
     except:
         print("Cannot open output file")
-    alphabetList = alphabet.copy()         # creating cipher list from keyword
-    cipherList = []
-    for letter in keyword:
-        alphabetList.remove(letter)
-        cipherList.append(letter)
-    for letter in alphabetList:
-        cipherList.append(letter)
-    for line in read_file:                  # encrypt
+    cipherList = keywordListCreator(keyword)
+    for line in read_file:
         write_file.write(encrypt(line, cipherList))
-    read_file.close()
-    write_file.close()
+
+
+def keyword_decrypt(cipherFile, textFile, keyword):
+    if key_error(keyword) == False:
+        print("Key not valid")
+    try:
+        read_file = open(cipherFile)
+    except:
+        print("Cannot open input file")
+    try:
+        write_file = open(textFile, "w")
+    except:
+        print("Cannot open output file")
+    cipherList = keywordListCreator(keyword)
+    for line in read_file:
+        write_file.write(decrypt(line, cipherList))
 
 
 def caesar_encrypt(textFile, cipherFile, shift):
@@ -91,8 +140,8 @@ def caesar_encrypt(textFile, cipherFile, shift):
     alphabetList = alphabet.copy()
     cipherList = []
     for i in range(len(alphabetList)):
-        num = (i+shift) % len(alphabetList)
-        cipherList.append(alphabetList[num])
+        num = (i+shift) % len(alphabetList)   # the modulo prevents the index from being out of range
+        cipherList.append(alphabetList[num])  # ex: 27 % 26 returns 1
     for line in read_file:
         write_file.write(encrypt(line, cipherList))
 
@@ -100,13 +149,15 @@ def caesar_encrypt(textFile, cipherFile, shift):
 general_cipherList1 = ['e', 'b', 'c', 'd', 'a', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
                        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 
+cipherList1 = ['z', 'e', 'b', 'r', 'a', 's', 'c', 'd', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 't', 'u',
+ 'v', 'w', 'x', 'y']
 
-# substitution_encrypt("/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/plainText.txt",
+# substitution_decrypt("/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/plainText.txt",
                     # "/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/cipherText.txt",
-                    # general_cipherList1)
+                    # cipherList1)
 
-# keyword_encrypt("/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/plainText.txt",
-                # "/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/cipherText.txt", "zebras")
+keyword_decrypt("/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/cipherText.txt",
+                "/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/plainText.txt", "zebras")
 
-caesar_encrypt("/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/plainText.txt",
-                "/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/cipherText.txt", 23)
+# caesar_encrypt("/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/plainText.txt",
+                # "/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/cipherText.txt", 23)
