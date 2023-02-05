@@ -1,3 +1,5 @@
+import math
+
 alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
             'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
             'u', 'v', 'w', 'x', 'y', 'z']
@@ -10,6 +12,11 @@ for let in alphabet:
 
 
 def key_error(key):                       # checks key for duplicate letters
+    """
+
+    :param key:
+    :return:
+    """
     letterList = []
     for letter in key:
         if letter in letterList:
@@ -19,6 +26,12 @@ def key_error(key):                       # checks key for duplicate letters
 
 
 def encrypt(line, cipherList):
+    """
+
+    :param line:
+    :param cipherList:
+    :return:
+    """
     cipherDict = {}
     let_counter = 0
     for char in cipherList:               # create cipher dict
@@ -37,24 +50,37 @@ def encrypt(line, cipherList):
 
 
 def decrypt(line, cipherList):
+    """
+
+    :param line:
+    :param cipherList:
+    :return:
+    """
     cipherDict = {}
     let_counter = 0
-    for char in cipherList:  # create cipher dict
+    for char in cipherList:                     # create cipher dict
         let_counter += 1
         cipherDict[char] = let_counter
     decryptedLine = ""
     for char in line:
-        if char not in alphabet:  # if special char, just write, don't encrypt
+        if char not in alphabet:                # if special char, just write, don't encrypt
             decryptedLine += char
         else:
-            loc = cipherDict[char]      # determines location of current char in cipher dict
-            for key in textDict.keys():  # loops through letters in alphabet until the letter
-                if textDict[key] == loc:  # corresponding to correct location is found
+            loc = cipherDict[char]              # determines location of current char in cipher dict
+            for key in textDict.keys():         # loops through letters in alphabet until the letter
+                if textDict[key] == loc:        # corresponding to correct location is found
                     decryptedLine += key
     return decryptedLine
 
 
 def substitution_encrypt(textFile, cipherFile, cipherList):
+    """
+
+    :param textFile:
+    :param cipherFile:
+    :param cipherList:
+    :return:
+    """
     if key_error(cipherList) == False:
         print("Key not valid")
     try:
@@ -70,6 +96,13 @@ def substitution_encrypt(textFile, cipherFile, cipherList):
 
 
 def substitution_decrypt(textFile, cipherFile, cipherList):
+    """
+
+    :param textFile:
+    :param cipherFile:
+    :param cipherList:
+    :return:
+    """
     if key_error(cipherList) == False:
         print("Key not valid")
     try:
@@ -85,7 +118,12 @@ def substitution_decrypt(textFile, cipherFile, cipherList):
 
 
 def keywordListCreator(keyword):
-    alphabetList = alphabet.copy()  # creating cipher list from keyword
+    """
+
+    :param keyword:
+    :return:
+    """
+    alphabetList = alphabet.copy()              # creating cipher list from keyword
     cipherList = []
     for letter in keyword:
         alphabetList.remove(letter)
@@ -97,6 +135,13 @@ def keywordListCreator(keyword):
 
 
 def keyword_encrypt(textFile, cipherFile, keyword):
+    """
+
+    :param textFile:
+    :param cipherFile:
+    :param keyword:
+    :return:
+    """
     if key_error(keyword) == False:
         print("Key not valid")
     try:
@@ -113,6 +158,13 @@ def keyword_encrypt(textFile, cipherFile, keyword):
 
 
 def keyword_decrypt(cipherFile, textFile, keyword):
+    """
+
+    :param cipherFile:
+    :param textFile:
+    :param keyword:
+    :return:
+    """
     if key_error(keyword) == False:
         print("Key not valid")
     try:
@@ -129,6 +181,13 @@ def keyword_decrypt(cipherFile, textFile, keyword):
 
 
 def caesar_encrypt(textFile, cipherFile, shift):
+    """
+
+    :param textFile:
+    :param cipherFile:
+    :param shift:
+    :return:
+    """
     try:
         read_file = open(textFile)
     except:
@@ -137,11 +196,152 @@ def caesar_encrypt(textFile, cipherFile, shift):
         write_file = open(cipherFile, "w")
     except:
         print("Cannot open output file")
+    cipherList = []
+    alphabetList = alphabet.copy()
+    for i in range(len(alphabetList)):
+        num = (i + shift) % len(alphabetList)           # the modulo prevents the index from being out of range
+        cipherList.append(alphabetList[num])            # ex: 27 % 26 returns 1
+    for line in read_file:
+        write_file.write(encrypt(line, cipherList))
+
+
+def caesar_decrypt(cipherFile, textFile, shift):
+    """
+
+    :param cipherFile:
+    :param textFile:
+    :param shift:
+    :return:
+    """
+    try:
+        read_file = open(cipherFile)
+    except:
+        print("Cannot open input file")
+    try:
+        write_file = open(textFile, "w")
+    except:
+        print("Cannot open output file")
     alphabetList = alphabet.copy()
     cipherList = []
     for i in range(len(alphabetList)):
-        num = (i+shift) % len(alphabetList)   # the modulo prevents the index from being out of range
-        cipherList.append(alphabetList[num])  # ex: 27 % 26 returns 1
+        num = (i+shift) % len(alphabetList)
+        cipherList.append(alphabetList[num])
+    for line in read_file:
+        write_file.write(decrypt(line, cipherList))
+
+
+def rot13_encrypt(textFile, cipherFile):
+    """
+
+    :param textFile:
+    :param cipherFile:
+    :return:
+    """
+    caesar_encrypt(textFile, cipherFile, 13)
+
+
+def rot13_decrypt(textFile, cipherFile):
+    """
+
+    :param textFile:
+    :param cipherFile:
+    :return:
+    """
+    caesar_decrypt(textFile, cipherFile, 13)
+
+
+def atbash_encrypt(textFile, cipherFile):
+    """
+
+    :param textFile:
+    :param cipherFile:
+    :return:
+    """
+    try:
+        read_file = open(textFile)
+    except:
+        print("Cannot open input file")
+    try:
+        write_file = open(cipherFile, "w")
+    except:
+        print("Cannot open output file")
+    cipherList = alphabet.copy()
+    cipherList.reverse()
+    for line in read_file:
+        write_file.write(encrypt(line, cipherList))
+
+
+def atbash_decrypt(textFile, cipherFile):
+    """
+
+    :param textFile:
+    :param cipherFile:
+    :return:
+    """
+    try:
+        read_file = open(cipherFile)
+    except:
+        print("Cannot open input file")
+    try:
+        write_file = open(textFile, "w")
+    except:
+        print("Cannot open output file")
+    cipherList = alphabet.copy()
+    cipherList.reverse()
+    for line in read_file:
+        write_file.write(decrypt(line, cipherList))
+
+
+def affine_encrypt(textFile, cipherFile, a, b):
+    """
+
+    :param textFile:
+    :param cipherFile:
+    :param a:
+    :param b:
+    :return:
+    """
+    try:
+        read_file = open(textFile)
+    except:
+        print("Cannot open input file")
+    try:
+        write_file = open(cipherFile, "w")
+    except:
+        print("Cannot open output file")
+    if math.gcd(a, 26) != 1:                        # checks if a and m are coprime
+        print("Key not valid")
+    cipherList = []
+    for i in range(len(alphabet)):
+        encryptedLetter = (a*i + b) % len(alphabet)  # affine encryption function
+        cipherList.append(alphabet[encryptedLetter])
+    for line in read_file:
+        write_file.write(encrypt(line, cipherList))
+
+
+def affine_decrypt(textFile, cipherFile, a, b):
+    """
+
+    :param textFile:
+    :param cipherFile:
+    :param a:
+    :param b:
+    :return:
+    """
+    try:
+        read_file = open(textFile)
+    except:
+        print("Cannot open input file")
+    try:
+        write_file = open(cipherFile, "w")
+    except:
+        print("Cannot open output file")
+    if math.gcd(a, 26) != 1:
+        print("Key not valid")
+    cipherList = []
+    for i in range(len(alphabet)):
+        encryptedLetter = (((pow(a, -1, 26)) * (i-b)) % len(alphabet))  # affine decryption function
+        cipherList.append(alphabet[encryptedLetter])
     for line in read_file:
         write_file.write(encrypt(line, cipherList))
 
@@ -149,15 +349,20 @@ def caesar_encrypt(textFile, cipherFile, shift):
 general_cipherList1 = ['e', 'b', 'c', 'd', 'a', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
                        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 
-cipherList1 = ['z', 'e', 'b', 'r', 'a', 's', 'c', 'd', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 't', 'u',
- 'v', 'w', 'x', 'y']
-
 # substitution_decrypt("/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/plainText.txt",
                     # "/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/cipherText.txt",
                     # cipherList1)
+# keyword_decrypt("/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/cipherText.txt",
+                # "/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/plainText.txt", "zebras")
 
-keyword_decrypt("/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/cipherText.txt",
-                "/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/plainText.txt", "zebras")
+# caesar_decrypt("/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/cipherText.txt",
+                # "/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/plainText.txt", 23)
 
-# caesar_encrypt("/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/plainText.txt",
-                # "/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/cipherText.txt", 23)
+# rot13_decrypt("/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/cipherText.txt",
+               # "/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/plainText.txt")
+
+# atbash_decrypt("/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/cipherText.txt",
+                # "/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/plainText.txt")
+
+affine_decrypt("/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/cipherText.txt",
+               "/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/plainText.txt", 5, 8)
