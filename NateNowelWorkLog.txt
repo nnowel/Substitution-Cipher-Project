@@ -1,0 +1,12 @@
+1/26: 2-5 pm - created key error checker function began substitution encryption function
+7:30-8:45 pm - wrote substitution encryption function (doesn’t work)
+
+1/31: 2-4 pm - created general encrypt function, implemented in keyword encryption function, created general substitution encrypt function (neither worked)
+6:30-7:45 pm - fixed bug in general and keyword substitution encrypt functions, got them working
+
+2/2: 2-4 pm - created general decrypt function, substitution decrypt function, keyword decrypt function, and caesar encrypt function
+
+2/4: 6:30-9 pm - created caesar decrypt function, rot-13 encrypt/decrypt functions, abash encrypt/decrypt function, and affine encrypt/decrypt function
+
+2/6: 11:45am - 12:45 pm - added code to keep upper case characters intact, wrote doc strings for all functions
+2:30-3:15 pm - final touches, checked output files, get ready to turn in
