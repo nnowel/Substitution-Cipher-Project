@@ -10,6 +10,44 @@ for let in alphabet:
     counter += 1
     textDict[let] = counter
 
+def main_function(textFile, cipherFile):
+    cipherType_input = input("Please enter the type of cipher")
+    eord = input("Do you want to encrypt or decrypt \"e\" or \"d\"")
+    if (cipherType_input == "substitution"):
+        sub_cipherList = input("enter your cipher list")
+        if eord == "e":
+            substitution_encrypt(textFile, cipherFile,sub_cipherList)
+        else:
+            substitution_decrypt(textFile, cipherFile,sub_cipherList)
+    elif (cipherType_input == "keyword"):
+        sub_keyword = input("Enter a keyword")
+        if eord == "e":
+            keyword_encrypt(textFile, cipherFile,sub_keyword)
+        else:
+            keyword_decrypt(textFile, cipherFile,sub_keyword)
+    elif(cipherType_input == "caesar"):
+        sub_caesar = input("Enter a shift")
+        if eord == "e":
+            caesar_encrypt(textFile, cipherFile,sub_caesar)
+        else:
+            caesar_decrypt(textFile, cipherFile,sub_caesar)
+    elif(cipherType_input == "rot13"):
+        if eord == "e":
+            rot13_encrypt(textFile, cipherFile)
+        else:
+            rot13_decrypt(textFile, cipherFile)
+    elif(cipherType_input == "atbash"):
+        if eord == "e":
+            atbash_encrypt(textFile, cipherFile)
+        else:
+            atbash_decrypt(textFile, cipherFile)
+    elif(cipherType_input == "affine"):
+        a = input("Enter a value for a: ")
+        b = input("Enter a value for b: ")
+        if eord == "e":
+            affine_encrypt(textFile, cipherFile,a,b)
+        else:
+            affine_decrypt(textFile, cipherFile,a,b)
 
 def key_error(key):
     """
@@ -379,7 +417,4 @@ def affine_decrypt(textFile, cipherFile, a, b):
 AtoBSubList = ['b', 'a', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
                'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 
-# Directory: /Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/fileName
-
-caesar_encrypt("/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/liquid.txt",
-               "/Users/nathanielnowel/PycharmProjects/Substitution-Cipher-Project/cipherText.txt", -1)
+main_function("plainText.txt","cipherText.txt")
